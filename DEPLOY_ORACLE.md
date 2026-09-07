@@ -2,7 +2,28 @@
 
 Bot harus online 24/7 — pakai `systemd` di VM supaya auto-jalan & auto-restart.
 
-## Siapkan di VM (sekali)
+## Cara paling cepat: satu script
+
+Repositori `ai-trading` sudah punya `deploy/setup-oracle.sh` (berisi web app **dan** bot — web app `:8000` via nginx + systemd, bot Discord, Ollama opsional). Jalankan di VM baru:
+
+```bash
+# di VM (user `ubuntu`):
+git clone https://github.com/oekdosq/ai-trading.git && cd ai-trading
+bash deploy/setup-oracle.sh
+```
+
+Setelah itu dua file `.env` yang perlu kamu isi (bukan ulang install, hanya isi konfigurasi):
+
+```bash
+nano /home/ubuntu/ai-trading/.env      # WEB_SECRET + kredensial OANDA
+nano /opt/bots/discord-bot/.env        # DISCORD_TOKEN + CLIENT_ID (+ GUILD_ID)
+# lalu:
+cd /opt/bots/discord-bot && npm run deploy && sudo systemctl restart discord-bot
+```
+
+## Manual (langkah demi langkah)
+
+### Siapkan di VM (sekali)
 
 ```bash
 # Node 20 (LTS)
@@ -42,3 +63,4 @@ node src/index.js         # tes jalan — muncul "[ready] ... online"
 - Bot perlu izin **Slash Commands** saat diundang (scope `applications.commands`) — ulangi URL invite kalau command tak muncul.
 - `.env` & `data/` tidak boleh ikut di-download publik — sudah di-`.gitignore`.
 - Kalau berada di VM yang sama dengan web ai-trading, service beda — tidak bentrok (bot tanpa port HTTP).
+- **Jalur instance service**: ai-trading di `/home/ubuntu/ai-trading`, bot di `/opt/bots/discord-bot` — sesuai `deploy/*.service`.
