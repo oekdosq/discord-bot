@@ -3,10 +3,21 @@ import { embed } from './embed.js';
 
 const ARROW = { buy: '🔼 BUY', sell: '🔽 SELL', hold: '⏸ HOLD' };
 
-export async function fetchTradingSignal(live = false) {
-  const url = `${config.tradingApi}/api/signal${live ? '?mode=live' : ''}`;
+export async function fetchTradingSignal(mode = 'demo', timeoutMs) {
+  const url = `${config.tradingApi}/api/signal?mode=${mode}`;
+  const ms = timeoutMs ?? (mode === 'live' ? 150_000 : (mode === 'real' ? 60_000 : 20_000));
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(live ? 150_000 : 20_000) });
+    const res = await fetch(url, { signal: AbortSignal.timeout(ms) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return { ok: true, data: await res.json() };
+  } catch (error) {
+    return { ok: false, error };
+  }
+}
+
+export async function fetchTradingPrice() {
+  try {
+    const res = await fetch(`${config.tradingApi}/api/price`, { signal: AbortSignal.timeout(20_000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return { ok: true, data: await res.json() };
   } catch (error) {

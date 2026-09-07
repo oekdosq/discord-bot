@@ -5,21 +5,36 @@ import { fetchTradingSignal, signalEmbed, tradingErrorMessage } from '../../lib/
 export const data = new SlashCommandBuilder()
   .setName('signal')
   .setDescription('Analisis sinyal trading XAUUSD (Smart Money Concept)')
-  .addBooleanOption((o) => o.setName('live').setDescription('Pakai mode live (OANDA+LLM). Default demo (cepat)'))
+  .addStringOption((o) =>
+    o.setName('mode')
+      .setDescription('Sumber data (default demo)')
+      .addChoices(
+        { name: 'demo — cepat (data sintetis)', value: 'demo' },
+        { name: 'real — chart asli gratis', value: 'real' },
+        { name: 'live — OANDA + LLM', value: 'live' },
+      ),
+  )
   .setDMPermission(true);
 
 export async function execute(interaction) {
-  const live = interaction.options.getBoolean('live') ?? false;
+  const mode = interaction.options.getString('mode') ?? 'demo';
   await interaction.deferReply();
 
-  const { ok, data, error } = await fetchTradingSignal(live);
+  const timeout = mode === 'live' ? 150_000 : 40_000;
+  const { ok, data, error } = await fetchTradingSignal(mode, timeout);
   if (!ok) {
     const m = tradingErrorMessage(error);
     return interaction.editReply({ embeds: [embed({ color: 0xe74c3c, title: m.title, description: m.description })] });
   }
   if (!data.ok) {
+    const errors = data.errors || ['Analisis gagal.'];
+    let desc = errors.join('\n');
+    if (data.spot_price) {
+      const t = data.spot_updated_at ? new Date(data.spot_updated_at).toLocaleString('id-ID') : '';
+      desc += `\n\n**Harga emas asli (${data.spot_source ?? '?'}):** $${data.spot_price}${t ? ` (${t})` : ''}`;
+    }
     return interaction.editReply({
-      embeds: [embed({ color: 0xe74c3c, title: 'Gagal menghasilkan sinyal', description: (data.errors || ['Analisis gagal.']).join('\n') })],
+      embeds: [embed({ color: 0xe74c3c, title: 'Gagal menghasilkan sinyal', description: desc.slice(0, 2000) })],
     });
   }
 

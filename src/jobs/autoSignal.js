@@ -20,7 +20,7 @@ export default function start(client) {
         continue;
       }
 
-      const { ok, data } = await fetchTradingSignal(false);
+      const { ok, data } = await fetchTradingSignal('demo');
       if (ok && data.ok) {
         await channel.send({ embeds: [signalEmbed(data)] }).catch(() => {});
       }
