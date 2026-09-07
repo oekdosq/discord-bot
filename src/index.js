@@ -1,5 +1,5 @@
 import { Client, GatewayIntentBits } from 'discord.js';
-import { readdirSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { config } from './config.js';
@@ -28,6 +28,15 @@ async function loadEvents(client) {
   }
 }
 
+async function loadJobs(client) {
+  const dir = join(__dirname, 'jobs');
+  if (!existsSync(dir)) return;
+  for (const file of readdirSync(dir).filter((f) => f.endsWith('.js'))) {
+    const mod = await import(pathToFileURL(join(dir, file)).href);
+    if (typeof mod.default === 'function') mod.default(client);
+  }
+}
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -39,6 +48,7 @@ const client = new Client({
 
 client.commands = await loadCommands();
 await loadEvents(client);
+await loadJobs(client);
 
 if (!config.token) {
   console.error('[fatal] DISCORD_TOKEN kosong. Copy .env.example -> .env lalu isi.');

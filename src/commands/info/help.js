@@ -13,7 +13,7 @@ export async function execute(interaction) {
   for (const cmd of commands.values()) {
     const def = cmd.data.toJSON();
     let cat = 'Info';
-    if (def.name === 'signal') cat = 'Trading';
+    if (def.name === 'signal' || def.name === 'signalauto') cat = 'Trading';
     else if (def.default_member_permissions) {
       const perms = { 8: 'Admin', 32: 'Admin', 2: 'Setup', 16: 'Admin', 1: 'Setup' };
       cat = perms[BigInt(def.default_member_permissions)] ?? 'Admin';

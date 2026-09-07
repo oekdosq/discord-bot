@@ -19,6 +19,10 @@ export function getGuild(guildId) {
   return load()[guildId] ?? {};
 }
 
+export function allGuilds() {
+  return load();
+}
+
 export function setGuild(guildId, patch = {}) {
   const cur = getGuild(guildId);
   cache[guildId] = { ...cur, ...patch };
