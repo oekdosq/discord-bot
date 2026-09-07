@@ -5,8 +5,7 @@
 # Semua data NYATA (spot gold-api di API, chart asli via IP HP).
 # =========================================================
 set -u
-STEP=1
-say() { echo; echo "==> [$STEP/$TOTAL] $1"; STEP=$((STEP+1)); }
+say() { echo; echo "==> $1"; }
 
 say "Cek Termux"
 if [ -d /data/data/com.termux ]; then :; else echo "!! Bukan Termux, berhenti."; exit 1; fi
