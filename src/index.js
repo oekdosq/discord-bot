@@ -1,4 +1,5 @@
 import { Client, GatewayIntentBits } from 'discord.js';
+import { createServer } from 'node:http';
 import { existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -48,6 +49,14 @@ const client = new Client({
 client.commands = await loadCommands();
 await loadEvents(client);
 await loadJobs(client);
+
+const health = createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ ok: true, uptime: Math.round(process.uptime()) }));
+});
+health.listen(process.env.PORT || 8080, () =>
+  console.log(`[health] listening :${process.env.PORT || 8080}`),
+);
 
 global.process.on('unhandledRejection', (reason) => {
   console.error('[unhandledRejection]', reason instanceof Error ? (reason.stack || reason.message) : reason);
