@@ -3,7 +3,7 @@ import { embed } from '../lib/embed.js';
 import { formatMessage } from '../lib/format.js';
 import { LEAVE_KEY } from '../commands/setup/leave.js';
 
-export default async function guildMemberRemove(member) {
+export default async function guildMemberRemove(client, member) {
   const { guild } = member;
   const settings = getGuild(guild.id);
   const key = LEAVE_KEY;

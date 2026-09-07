@@ -1,7 +1,7 @@
 import { errEmbed } from '../lib/embed.js';
 
-export default async function interactionCreate(interaction) {
-  if (!interaction.isChatInputCommand()) return;
+export default async function interactionCreate(client, interaction) {
+  if (!interaction?.isChatInputCommand()) return;
 
   const command = interaction.client.commands.get(interaction.commandName);
   if (!command) {

@@ -49,6 +49,12 @@ client.commands = await loadCommands();
 await loadEvents(client);
 await loadJobs(client);
 
+global.process.on('unhandledRejection', (reason) => {
+  console.error('[unhandledRejection]', reason instanceof Error ? (reason.stack || reason.message) : reason);
+});
+
+client.on('error', (error) => console.error('[client error]', error.message ?? error));
+
 if (!config.token) {
   console.error('[fatal] DISCORD_TOKEN kosong. Copy .env.example -> .env lalu isi.');
   process.exit(1);

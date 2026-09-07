@@ -4,7 +4,7 @@ import { formatMessage } from '../lib/format.js';
 import { WELCOME_KEY } from '../commands/setup/welcome.js';
 import { AUTOROLE_KEY } from '../commands/setup/autorole.js';
 
-export default async function guildMemberAdd(member) {
+export default async function guildMemberAdd(client, member) {
   const { guild } = member;
   const settings = getGuild(guild.id);
   const key = WELCOME_KEY;
