@@ -17,8 +17,10 @@ pkg upgrade -y || true
 say "Install kebutuhan (git, node, python)"
 pkg install -y git nodejs-lts python python-pip termux-api || exit 1
 
-say "Pasang pandas/numpy versi Termux (biar pip gak bangun dari source)"
-pkg install -y python-pandas python-numpy || exit 1
+say "Pasang hasilkali/numpy Termux (repo utama -> tur untuk pandas)"
+pkg install -y python-numpy || exit 1
+pkg install -y tur-repo || exit 1
+pkg install -y python-pandas || exit 1
 
 say "Clone repo"
 cd ~ || exit 1
