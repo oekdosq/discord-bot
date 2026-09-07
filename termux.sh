@@ -17,10 +17,13 @@ pkg upgrade -y || true
 say "Install kebutuhan (git, node, python)"
 pkg install -y git nodejs-lts python python-pip termux-api || exit 1
 
-say "Pasang hasilkali/numpy Termux (repo utama -> tur untuk pandas)"
+say "Pasang hasil/numpy Termux (repo utama -> tur untuk pandas)"
 pkg install -y python-numpy || exit 1
 pkg install -y tur-repo || exit 1
 pkg install -y python-pandas || exit 1
+
+say "Pasang Rust + compiler (untuk pydantic-core milik FastAPI)"
+pkg install -y rust binutils clang make pkg-config || exit 1
 
 say "Clone repo"
 cd ~ || exit 1
