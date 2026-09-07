@@ -17,6 +17,9 @@ pkg upgrade -y || true
 say "Install kebutuhan (git, node, python)"
 pkg install -y git nodejs-lts python python-pip termux-api || exit 1
 
+say "Pasang pandas/numpy versi Termux (biar pip gak bangun dari source)"
+pkg install -y python-pandas python-numpy || exit 1
+
 say "Clone repo"
 cd ~ || exit 1
 [ -d ai-trading ] && (cd ai-trading && git pull --ff-only) || git clone https://github.com/oekdosq/ai-trading || exit 1
