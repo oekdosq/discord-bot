@@ -27,7 +27,7 @@ cd ~ || exit 1
 
 say "Pasang web app (Python)"
 cd ~/ai-trading || exit 1
-python -m venv .venv
+python -m venv --system-site-packages .venv
 source .venv/bin/activate
 pip install -r requirements.txt || exit 1
 
